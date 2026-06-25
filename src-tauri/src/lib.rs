@@ -99,6 +99,24 @@ fn open_in_antigravity(project_path: String) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+fn get_template_pdf(template: String) -> Result<Vec<u8>, String> {
+    let template_dir = get_template_base_dir().join(&template);
+    if template_dir.exists() && template_dir.is_dir() {
+        if let Ok(entries) = std::fs::read_dir(template_dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("pdf") {
+                    if let Ok(bytes) = std::fs::read(&path) {
+                        return Ok(bytes);
+                    }
+                }
+            }
+        }
+    }
+    Err("No PDF preview found".to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -108,7 +126,8 @@ pub fn run() {
             create_project,
             open_in_antigravity,
             get_templates,
-            delete_project
+            delete_project,
+            get_template_pdf
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

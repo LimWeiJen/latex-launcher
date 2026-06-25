@@ -6,6 +6,7 @@ import { NewProjectModal } from "./components/NewProjectModal";
 import { LazyStore } from "@tauri-apps/plugin-store";
 import { ask } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
+import { motion, AnimatePresence } from "framer-motion";
 
 const store = new LazyStore("projects.json");
 
@@ -72,33 +73,66 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 font-sans dark:bg-black">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-8 py-4 dark:border-zinc-800 dark:bg-zinc-950">
+      <motion.header 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="flex items-center justify-between border-b border-zinc-200 bg-white px-8 py-4 dark:border-zinc-800 dark:bg-zinc-950"
+      >
         <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           LaTeX Launcher
         </h1>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm hover:shadow-blue-500/20"
         >
           <Plus className="h-4 w-4" />
           New Project
-        </button>
-      </header>
+        </motion.button>
+      </motion.header>
 
       <main className="flex-1 p-8">
         {projects.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center text-center text-zinc-500 dark:text-zinc-400">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex h-full flex-col items-center justify-center text-center text-zinc-500 dark:text-zinc-400"
+          >
             <p className="mb-4 text-lg">No projects found.</p>
             <p className="text-sm">Click "New Project" to create your first LaTeX document.</p>
-          </div>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <div 
-                key={project.id} 
-                className="group flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-md transition-all dark:border-zinc-800 dark:bg-zinc-900 cursor-pointer"
-                onClick={() => handleOpenProject(project.path)}
-              >
+          <motion.div 
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              }
+            }}
+          >
+            <AnimatePresence>
+              {projects.map((project) => (
+                <motion.div 
+                  key={project.id} 
+                  layout
+                  variants={{
+                    hidden: { opacity: 0, y: 20, scale: 0.95 },
+                    show: { opacity: 1, y: 0, scale: 1 }
+                  }}
+                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                  className="group flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-lg transition-shadow dark:border-zinc-800 dark:bg-zinc-900 cursor-pointer"
+                  onClick={() => handleOpenProject(project.path)}
+                >
                 <div>
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 transition-colors">
@@ -129,9 +163,10 @@ export default function Home() {
                     Open in IDE →
                   </button>
                 </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
       </main>
 

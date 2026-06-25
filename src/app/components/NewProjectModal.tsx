@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { FolderOpen, Plus, Loader2 } from "lucide-react";
 import { LazyStore } from "@tauri-apps/plugin-store";
+import { motion, AnimatePresence } from "framer-motion";
 
 const store = new LazyStore("projects.json");
 
@@ -21,6 +22,8 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
   const [templatesList, setTemplatesList] = useState<string[]>(["Empty"]);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState("");
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isLoadingPdf, setIsLoadingPdf] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -40,7 +43,38 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!template || template === "Empty" || !isOpen) {
+      setPdfUrl(null);
+      return;
+    }
+    
+    let isMounted = true;
+    let urlToRevoke: string | null = null;
+    setIsLoadingPdf(true);
+    setPdfUrl(null);
+
+    invoke<number[]>("get_template_pdf", { template })
+      .then((bytes) => {
+        if (!isMounted) return;
+        const arrayBuffer = new Uint8Array(bytes).buffer;
+        const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        urlToRevoke = url;
+        setPdfUrl(url);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch template preview:", err);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingPdf(false);
+      });
+
+    return () => {
+      isMounted = false;
+      if (urlToRevoke) URL.revokeObjectURL(urlToRevoke);
+    };
+  }, [template, isOpen]);
 
   const handleSelectFolder = async () => {
     try {
@@ -100,9 +134,24 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-        <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Create New Project</h2>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        >
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+            className="w-full max-w-5xl rounded-xl bg-white shadow-2xl dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex overflow-hidden h-[80vh] min-h-[600px]"
+          >
+            {/* Left side: Form */}
+            <div className="w-[400px] p-6 flex flex-col border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto shrink-0">
+              <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50">Create New Project</h2>
         
         {error && (
           <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
@@ -164,7 +213,7 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
           </div>
         </div>
 
-        <div className="mt-8 flex justify-end gap-3">
+        <div className="mt-auto pt-8 flex justify-end gap-3">
           <button
             onClick={onClose}
             className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors"
@@ -184,7 +233,37 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
             Create Project
           </button>
         </div>
-      </div>
-    </div>
+            </div>
+
+            {/* Right side: Preview */}
+            <div className="flex-1 bg-zinc-100 dark:bg-zinc-950/50 flex flex-col hidden md:flex">
+              <div className="border-b border-zinc-200 dark:border-zinc-800 p-4 shrink-0 bg-white dark:bg-zinc-900">
+                <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Template Preview</h3>
+              </div>
+              <div className="flex-1 p-4 flex items-center justify-center overflow-hidden">
+                {isLoadingPdf ? (
+                  <div className="flex flex-col items-center gap-3 text-zinc-400">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <span className="text-sm">Loading preview...</span>
+                  </div>
+                ) : pdfUrl ? (
+                  <iframe 
+                    src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                    className="w-full h-full rounded-md shadow-sm border border-zinc-200 dark:border-zinc-800 bg-white"
+                  />
+                ) : (
+                  <div className="text-center text-zinc-400 flex flex-col items-center gap-2">
+                    <div className="p-3 rounded-full bg-zinc-200/50 dark:bg-zinc-800/50">
+                      <FolderOpen className="h-6 w-6 opacity-50" />
+                    </div>
+                    <p className="text-sm">No preview available for "{template}"</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
