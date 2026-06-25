@@ -1,0 +1,145 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Plus, Folder, Calendar, Trash2 } from "lucide-react";
+import { NewProjectModal } from "./components/NewProjectModal";
+import { LazyStore } from "@tauri-apps/plugin-store";
+import { ask } from "@tauri-apps/plugin-dialog";
+import { invoke } from "@tauri-apps/api/core";
+
+const store = new LazyStore("projects.json");
+
+interface Project {
+  id: string;
+  name: string;
+  path: string;
+  template: string;
+  createdAt: string;
+}
+
+export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  const loadProjects = async () => {
+    try {
+      const savedProjects = await store.get<Project[]>("projects");
+      if (savedProjects) {
+        setProjects(savedProjects);
+      }
+    } catch (err) {
+      console.error("Failed to load projects", err);
+    }
+  };
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const handleOpenProject = async (path: string) => {
+    try {
+      await invoke("open_in_antigravity", { projectPath: path });
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to open project: ${err}`);
+    }
+  };
+
+  const handleDeleteProject = async (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation();
+    try {
+      const confirmed = await ask(`Are you sure you want to completely delete "${project.name}" and all of its contents?`, {
+        title: "Delete Project",
+        kind: "warning",
+      });
+
+      if (confirmed) {
+        await invoke("delete_project", { projectPath: project.path });
+        
+        let savedProjects = await store.get<Project[]>("projects");
+        if (savedProjects) {
+          savedProjects = savedProjects.filter(p => p.id !== project.id);
+          await store.set("projects", savedProjects);
+          await store.save();
+          setProjects(savedProjects);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to delete project: ${err}`);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col bg-zinc-50 font-sans dark:bg-black">
+      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-8 py-4 dark:border-zinc-800 dark:bg-zinc-950">
+        <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          LaTeX Launcher
+        </h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+        >
+          <Plus className="h-4 w-4" />
+          New Project
+        </button>
+      </header>
+
+      <main className="flex-1 p-8">
+        {projects.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center text-center text-zinc-500 dark:text-zinc-400">
+            <p className="mb-4 text-lg">No projects found.</p>
+            <p className="text-sm">Click "New Project" to create your first LaTeX document.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
+              <div 
+                key={project.id} 
+                className="group flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-md transition-all dark:border-zinc-800 dark:bg-zinc-900 cursor-pointer"
+                onClick={() => handleOpenProject(project.path)}
+              >
+                <div>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 transition-colors">
+                      {project.name}
+                    </h3>
+                    <button 
+                      onClick={(e) => handleDeleteProject(e, project)}
+                      className="text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 p-1.5 rounded-md transition-colors opacity-0 group-hover:opacity-100"
+                      title="Delete Project"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <div className="mb-1 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    <Folder className="h-3 w-3" />
+                    <span className="truncate" title={project.path}>{project.path}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                    <Calendar className="h-3 w-3" />
+                    <span>{new Date(project.createdAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-between items-center">
+                  <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                    {project.template}
+                  </span>
+                  <button className="text-sm font-medium text-blue-600 opacity-0 transition-opacity group-hover:opacity-100 dark:text-blue-400">
+                    Open in IDE →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <NewProjectModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onProjectCreated={loadProjects}
+      />
+    </div>
+  );
+}

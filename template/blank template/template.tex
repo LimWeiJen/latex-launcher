@@ -1,0 +1,175 @@
+\documentclass{article}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage[utf8]{inputenc} % UTF-8 encoding
+\usepackage[T1]{fontenc}    % Font encoding
+\usepackage{lmodern}        % Standard scalable vector font
+
+
+\usepackage{xcolor}         % Colors
+\definecolor{umblue}{RGB}{0, 51, 102}    % Deep University Blue style
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\definecolor{keywordcolor}{rgb}{0.0, 0.0, 0.5}
+
+\usepackage{fancyhdr}       % Headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\color{umblue}\small\bfseries Insert Title Here} % Left header
+\rhead{\small\thepage}                               % Right header
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{umblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\usepackage{titlesec}       % Custom section titles
+\titleformat{\section}
+  {\color{umblue}\normalfont\Large\bfseries\sffamily}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\color{umblue}\normalfont\large\bfseries\sffamily}
+  {\thesubsection}{1em}{}
+
+\usepackage{listings}       % Code listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{orange},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    frame=lines,
+    rulecolor=\color{umblue}
+}
+\lstset{style=mystyle}
+
+\usepackage{tcolorbox}      % Nice boxes for theorems/notes
+\newtcolorbox{infobox}[1][]{
+  colback=umblue!5!white,
+  colframe=umblue,
+  title=#1,
+  fonttitle=\bfseries\sffamily
+}
+
+\usepackage{hyperref}       % Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=umblue,
+    filecolor=magenta,      
+    urlcolor=umblue,
+    pdftitle={Assignment Template},
+    pdfpagemode=FullScreen,
+}
+
+\usepackage{graphicx}       % Images
+\usepackage{amsmath, amssymb} % Math
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\newcommand{\assignmentTitle}{Assignment Title Here}
+\newcommand{\courseCode}{KIX1001}
+\newcommand{\courseName}{Engineering Mathematics}
+\newcommand{\studentName}{Lim Wei Jen}
+\newcommand{\studentID}{25005784/1}
+\newcommand{\submissionDate}{\today}
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\vspace*{2cm}
+	
+	{\Huge\bfseries\sffamily\color{umblue} UNIVERSITY OF MALAYA \par}
+	\vspace{1cm}
+	{\Large\bfseries \courseCode \par}
+	{\large \courseName \par}
+	\vspace{3cm}
+	
+	{\Huge\bfseries \assignmentTitle \par}
+	\vspace{3cm}
+	
+	\begin{tcolorbox}[colback=white,colframe=umblue,width=0.8\textwidth,arc=0mm,boxrule=1pt]
+		\centering
+		\large
+		\begin{tabular}{rl}
+			\textbf{Name:} & \studentName \\
+			\textbf{Metric No:} & \studentID \\
+			\textbf{Date:} & \submissionDate
+		\end{tabular}
+	\end{tcolorbox}
+	
+	\vfill
+	
+%	\includegraphics[width=0.3\textwidth]{logo.png} % Place your logo here
+%	\vspace{2cm}
+
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	CONTENT
+%----------------------------------------------------------------------------------------
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+This is a sophisticated LaTeX template designed for programming assignments. It features code highlighting, clean typography, and a professional layout.
+
+\subsection{Features}
+\begin{itemize}
+    \item Custom code listing styles using \texttt{listings}.
+    \item Clean headers and footers using \texttt{fancyhdr}.
+    \item Professional title page.
+    \item \texttt{mathpazo} and \texttt{helvet} fonts for a modern look.
+\end{itemize}
+
+\section{Code Demonstration}
+Here is an example of Python code formatting:
+
+\begin{lstlisting}[language=Python, caption=Example Python Code]
+def hello_world():
+    # This is a comment
+    print("Hello, World!")
+    return True
+
+if __name__ == "__main__":
+    hello_world()
+\end{lstlisting}
+
+And here is some C++ code:
+
+\begin{lstlisting}[language=C++]
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}
+\end{lstlisting}
+
+\section{Mathematics and Logic}
+\begin{infobox}[Note]
+    We can use custom boxes for important definitions or notes.
+\end{infobox}
+
+The template supports standard math environments:
+\begin{equation}
+    \sum_{i=0}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}
+\end{equation}
+
+\section{Conclusion}
+This template provides a strong foundation for technical reports and programming documentation.
+
+\end{document}

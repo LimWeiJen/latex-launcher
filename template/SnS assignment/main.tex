@@ -1,0 +1,67 @@
+% ==============================================================================
+% SIGNALS AND SYSTEMS ASSIGNMENT TEMPLATE (MAIN ENTRY FILE)
+% Created by Antigravity AI - Designed for modern, premium presentation.
+% ==============================================================================
+
+\documentclass[11pt, a4paper]{article}
+
+% ------------------------------------------------------------------------------
+% 1. USER METADATA CONFIGURATION
+% ------------------------------------------------------------------------------
+% Easily change your assignment details here. These will auto-populate the
+% Cover Page, Header/Footer, and PDF Metadata.
+\newcommand{\mycoursecode}{KIE2006}
+\newcommand{\mycoursename}{Signals and Systems}
+\newcommand{\myassignmenttitle}{Assignment}
+\newcommand{\mystudentname}{Lim Wei Jen}
+\newcommand{\mymatricno}{25005784}
+
+% ------------------------------------------------------------------------------
+% 2. PREAMBLE & TEMPLATE INCLUDES
+% ------------------------------------------------------------------------------
+% Include the styles, packages, and formatting definitions
+\input{preamble.tex}
+
+% Overwrite preamble metadata variables with user configuration
+\renewcommand{\coursecode}{\mycoursecode}
+\renewcommand{\coursename}{\mycoursename}
+\renewcommand{\assignmenttitle}{\myassignmenttitle}
+\renewcommand{\studentname}{\mystudentname}
+\renewcommand{\matricno}{\mymatricno}
+
+% ------------------------------------------------------------------------------
+% 3. DOCUMENT BODY
+% ------------------------------------------------------------------------------
+\begin{document}
+
+    % -- Title/Cover Page --
+    \input{custom_cover.tex}
+    \clearpage
+    
+    % -- Table of Contents (TOC) --
+    % Set to roman page numbering for the front matter
+    \pagenumbering{roman}
+    \setcounter{page}{1}
+    
+    \thispagestyle{plain} % Simple header/footer on the TOC page
+    \tableofcontents
+    \newpage
+    \clearpage
+    
+    % -- Main Content --
+    % Set to arabic page numbering for problems and solutions
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    
+    % Section 1: LTI Systems and Signals Representations
+    % All solutions are modularly placed inside the sections folder
+    \input{sections/problem1.tex}
+    
+    % Add more problems here as your assignment grows:
+    % \input{sections/problem2.tex}
+    % \input{sections/problem3.tex}
+
+    % Label for Page X of Y page numbering (bypasses lastpage package conflicts)
+    \label{LastPage}
+
+\end{document}
