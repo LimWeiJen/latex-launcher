@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Changing Metadata}{1}{section.1}%
+\contentsline {section}{\numberline {2}Boxed Environments}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Problem Environment}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Solution Environment}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Other Boxed Environments}{2}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Including MATLAB or Python Code}{3}{section.3}%
+\contentsline {section}{\numberline {4}Drawing, Figures, and Tables}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Plotting Graphs with PGFPlots}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Drawing Circuits with CircuiTikZ}{5}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Inserting Pre-existing Images}{5}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Creating Elegant Tables}{6}{subsection.4.4}%

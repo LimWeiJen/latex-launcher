@@ -1,5 +1,0 @@
-\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Features}{2}{subsection.1.1}%
-\contentsline {section}{\numberline {2}Code Demonstration}{2}{section.2}%
-\contentsline {section}{\numberline {3}Mathematics and Logic}{2}{section.3}%
-\contentsline {section}{\numberline {4}Conclusion}{3}{section.4}%

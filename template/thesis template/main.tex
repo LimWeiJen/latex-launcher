@@ -1,0 +1,69 @@
+\documentclass[10pt, journal, twocolumn]{IEEEtran}
+
+% ------------------------------------------------------------------------------
+% USER METADATA CONFIGURATION
+% Easily change your thesis details here.
+\newcommand{\mythesistitle}{YOUR THESIS TITLE}
+\newcommand{\mystudentname}{YOUR NAME}
+\newcommand{\mymatricno}{YOUR MATRIC NUMBER}
+\newcommand{\mysupervisor}{YOUR SUPERVISOR}
+\newcommand{\myuniversity}{UNIVERSITY OF MALAYA}
+\newcommand{\mydepartment}{Department of Electrical Engineering}
+% ------------------------------------------------------------------------------
+
+\input{preamble.tex}
+
+\pagestyle{empty}
+
+\begin{document}
+    
+    % IEEE paper title and author block
+    \title{\mythesistitle}
+    
+    \author{
+        \IEEEauthorblockN{\mystudentname}\\
+        \IEEEauthorblockA{\textit{\mydepartment} \\
+        \textit{\myuniversity}\\
+        Kuala Lumpur, Malaysia\\
+        limweijen96@gmail.com}
+    }
+    
+    \maketitle
+    \thispagestyle{empty}
+    
+    \begin{abstract}
+    This is the abstract. It must be a single paragraph and between 150 to 250 words. All variables should appear lightface italic; numbers and units will remain bold. In order for an Abstract to be effective when displayed on IEEE Xplore, it must be an accurate, standalone reflection of the contents of the article. They shall not contain numbered mathematical equations, numbered reference citations, nor footnotes.
+    \end{abstract}
+    
+    \begin{IEEEkeywords}
+    Keyword1, Keyword2, Keyword3, Keyword4.
+    \end{IEEEkeywords}
+    
+    % Optional Nomenclature section
+    \section*{Nomenclature}
+    \addcontentsline{toc}{section}{Nomenclature}
+    \begin{IEEEdescription}[\IEEEsetlabelwidth{$V_{GS}$} \IEEEusemathlabelsep]
+        \item[$V_{DS}$] Drain-to-source voltage.
+        \item[$I_D$] Drain current.
+        \item[$V_{GS}$] Gate-to-source voltage.
+    \end{IEEEdescription}
+
+    \input{sections/1_introduction.tex}
+    \input{sections/2_body.tex}
+    \input{sections/3_conclusion.tex}
+    
+    \appendices
+    \input{sections/4_appendix.tex}
+    
+    \input{sections/5_acknowledgment.tex}
+
+    \bibliographystyle{IEEEtran}
+    \bibliography{references}
+    
+    \vspace{12pt}
+    
+    \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/University Logo.png}}]{\mystudentname}
+    Biography text here. The biography begins with the author's full name and IEEE membership history. The first paragraph may contain a place and/or date of birth, next the educational background is listed. The second paragraph lists military and work experience. The third paragraph begins with the author's title and last name, and lists memberships in professional societies, awards, and work for IEEE committees.
+    \end{IEEEbiography}
+
+\end{document}

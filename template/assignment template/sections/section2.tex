@@ -1,0 +1,41 @@
+\section{Boxed Environments}
+
+This template includes a beautiful boxed environment for problems and a cleanly separated environment for solutions. It also includes environments for definitions, theorems, and notes.
+
+\subsection{Problem Environment}
+Use the \texttt{problem} environment to state your questions. You can provide an optional title to the problem. 
+
+\begin{problem}[1: Signal Analysis]
+Calculate the energy and power of the given signal $x(t) = e^{-2t}u(t)$.
+\end{problem}
+
+\subsection{Solution Environment}
+Following the problem, you can use the \texttt{solution} environment to provide your answer. It will automatically style the section and add a QED marker at the end.
+
+\begin{solution}
+The energy of the signal is given by:
+\begin{align*}
+E &= \int_{-\infty}^{\infty} |x(t)|^2 \,dt \\
+  &= \int_{0}^{\infty} e^{-4t} \,dt \\
+  &= \left[ \frac{e^{-4t}}{-4} \right]_0^\infty \\
+  &= \frac{1}{4} \text{ Joules}
+\end{align*}
+Since the energy is finite ($E < \infty$), the power is $P = 0$.
+\end{solution}
+
+\subsection{Other Boxed Environments}
+You can use the \texttt{definition}, \texttt{theorem}, and \texttt{note} environments to highlight important concepts.
+
+\begin{definition}[Energy Signal]
+A signal is an energy signal if its total energy satisfies $0 < E < \infty$.
+\end{definition}
+
+\begin{theorem}[Parseval's Theorem]
+The total energy computed in the time domain is equal to the total energy computed in the frequency domain.
+\end{theorem}
+
+\begin{note}[Important]
+Power signals have infinite energy, while energy signals have zero average power.
+\end{note}
+
+\newpage

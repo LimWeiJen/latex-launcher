@@ -1,0 +1,46 @@
+\documentclass[11pt, a4paper]{article}
+
+% ------------------------------------------------------------------------------
+% USER METADATA CONFIGURATION
+% Easily change your assignment details here. These will auto-populate the
+% Cover Page, Header/Footer, and PDF Metadata.
+\newcommand{\mycoursecode}{YOUR COURSE CODE}
+\newcommand{\mycoursename}{YOUR COURSE NAME}
+\newcommand{\myassignmenttitle}{YOUR ASSIGNMENT TITLE}
+\newcommand{\mystudentname}{YOUR NAME}
+\newcommand{\mymatricno}{YOUR MATRIC NUMBER}
+\newcommand{\mycourselecturer}{YOUR LECTURER}
+% ------------------------------------------------------------------------------
+
+\input{preamble.tex}
+\renewcommand{\coursecode}{\mycoursecode}
+\renewcommand{\coursename}{\mycoursename}
+\renewcommand{\assignmenttitle}{\myassignmenttitle}
+\renewcommand{\studentname}{\mystudentname}
+\renewcommand{\matricno}{\mymatricno}
+\renewcommand{\courselecturer}{\mycourselecturer}
+
+\begin{document}
+
+    \input{custom_cover.tex}
+    \clearpage
+    
+    \pagenumbering{roman}
+    \setcounter{page}{1}
+    
+    \thispagestyle{plain}
+    \tableofcontents
+    \newpage
+    \clearpage
+    
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    
+    \input{sections/section1.tex}
+    \input{sections/section2.tex}
+    \input{sections/section3.tex}
+    \input{sections/section4.tex}
+
+    \label{LastPage}
+
+\end{document}

@@ -1,0 +1,76 @@
+\section{Including MATLAB or Python Code}
+
+This template includes a pre-configured \texttt{matlabstyle} for \texttt{lstlisting} that provides syntax highlighting and a nice background box for your code.
+
+To include code directly in your document, use the \texttt{lstlisting} environment and set the style to \texttt{matlabstyle}.
+
+\begin{lstlisting}[style=matlabstyle, caption={A simple MATLAB script to plot a sine wave.}]
+% Define the time vector
+t = 0:0.01:2*pi;
+
+% Generate the signal
+x = sin(2*pi*1*t);
+
+% Plot the signal
+figure;
+plot(t, x, 'LineWidth', 1.5);
+title('Sine Wave');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+\end{lstlisting}
+
+Even though there's a \texttt{matlabstyle}, you can also use the newly added \texttt{pythonstyle} to display Python code cleanly with appropriate syntax highlighting:
+
+\begin{lstlisting}[style=pythonstyle, caption={A simple Python script.}]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the time vector
+t = np.linspace(0, 2*np.pi, 100)
+x = np.sin(2 * np.pi * 1 * t)
+
+plt.plot(t, x)
+plt.title('Sine Wave')
+plt.show()
+\end{lstlisting}
+
+We also provide \texttt{cppstyle} for C/C++ developers:
+
+\begin{lstlisting}[style=cppstyle, caption={A simple C++ program.}]
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    for (int num : numbers) {
+        std::cout << "Number: " << num << std::endl;
+    }
+    return 0;
+}
+\end{lstlisting}
+
+For web developers, there is \texttt{jsstyle} which supports JavaScript and TypeScript natively:
+
+\begin{lstlisting}[style=jsstyle, caption={A modern TypeScript function.}]
+interface User {
+    id: number;
+    name: string;
+}
+
+const fetchUser = async (id: number): Promise<User> => {
+    const response = await fetch(`/api/users/${id}`);
+    const data = await response.json();
+    return data;
+};
+\end{lstlisting}
+
+Finally, you can even showcase LaTeX code itself using the \texttt{latexstyle}:
+
+\begin{lstlisting}[style=latexstyle, caption={A snippet of LaTeX code.}]
+\begin{problem}[1: Signal Analysis]
+Calculate the energy and power of the given signal $x(t) = e^{-2t}u(t)$.
+\end{problem}
+\end{lstlisting}
+
+\newpage

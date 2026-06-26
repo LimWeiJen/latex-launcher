@@ -1,0 +1,62 @@
+\section{Drawing, Figures, and Tables}
+
+This section demonstrates how to use the built-in packages to create high-quality plots, draw circuits, insert images, and create beautiful tables.
+
+\subsection{Plotting Graphs with PGFPlots}
+The template comes pre-configured with \texttt{pgfplots} and custom styles like \texttt{snsaxis} (for continuous signals) and \texttt{snsdiscrete} (for discrete signals).
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            snsaxis,
+            ymin=-1.5, ymax=1.5,
+            xmin=0, xmax=10
+        ]
+            \addplot[accentteal, thick, domain=0:10] {exp(-0.2*x)*sin(deg(2*x))};
+            \addlegendentry{$e^{-0.2t}\sin(2t)$}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{A continuous-time damped sine wave plotted using PGFPlots.}
+\end{figure}
+
+\subsection{Drawing Circuits with CircuiTikZ}
+You can use \texttt{circuitikz} to draw electrical circuits directly in \LaTeX.
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american]
+        \draw (0,0) to[V, l=$V_s$] (0,3)
+              to[R, l=$R_1$] (3,3)
+              to[C, l=$C_1$] (3,0) -- (0,0);
+    \end{circuitikz}
+    \caption{A simple RC circuit drawn using \texttt{circuitikz}.}
+\end{figure}
+
+\subsection{Inserting Pre-existing Images}
+To include an existing image file (e.g., PNG, JPG), use the \texttt{\textbackslash includegraphics} command. Make sure to place your images in the \texttt{images} directory.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=3cm]{images/University Logo.png}
+    \caption{Inserting an external image file (University Logo).}
+\end{figure}
+
+\subsection{Creating Elegant Tables}
+The \texttt{booktabs} package is included to create beautiful, professional-looking tables without vertical lines.
+
+\begin{table}[H]
+    \centering
+    \caption{A comparison of continuous and discrete signal properties.}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Property} & \textbf{Continuous-Time} & \textbf{Discrete-Time} \\
+        \midrule
+        Independent Variable & $t$ (Real) & $n$ (Integer) \\
+        Delta Function & Dirac Delta $\delta(t)$ & Kronecker Delta $\delta[n]$ \\
+        Fourier Transform & CTFT & DTFT \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\newpage

@@ -1,0 +1,354 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{microtype}
+
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault} % Set sans-serif as document-wide default
+
+% Colors Definition (Deep Navy, Slate Grey, and Accent Teal)
+\usepackage{xcolor}
+\definecolor{primarynavy}{HTML}{1A365D} % Elegant deep navy
+\definecolor{accentteal}{HTML}{0D9488}  % Modern teal accent
+\definecolor{slategrey}{HTML}{64748B}   % Slate grey for metadata and grid lines
+\definecolor{softbg}{HTML}{F8FAFC}      % Background color for problem boxes and listings
+\definecolor{lightgrey}{HTML}{E2E8F0}   % Borders and rules color
+
+% Math Packages
+\usepackage{amsmath, amssymb, amsfonts, mathtools}
+\usepackage{physics} % Easy derivatives, evaluations, vectors, differentials
+
+% MATLAB Code Listings Configuration
+\usepackage{listings}
+\usepackage{textcomp} % Required for upquotes in listings
+\lstdefinestyle{matlabstyle}{
+    language=Matlab,
+    backgroundcolor=\color{softbg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{accentteal}\itshape,
+    deletekeywords={...},
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    frame=single,
+    framesep=6pt,
+    framerule=0.5pt,
+    rulecolor=\color{lightgrey},
+    keepspaces=true,
+    keywordstyle=\color{primarynavy}\bfseries,
+    morekeywords={*,...},
+    numbers=left,
+    numberstyle=\tiny\color{slategrey},
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stringstyle=\color{purple},
+    tabsize=4,
+    upquote=true
+}
+
+% Python Code Listings Configuration
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    backgroundcolor=\color{softbg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{slategrey}\itshape,
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    frame=single,
+    framesep=6pt,
+    framerule=0.5pt,
+    rulecolor=\color{lightgrey},
+    keepspaces=true,
+    keywordstyle=\color{accentteal}\bfseries,
+    numbers=left,
+    numberstyle=\tiny\color{slategrey},
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stringstyle=\color{orange!80!black},
+    tabsize=4,
+    upquote=true
+}
+
+% C++ Code Listings Configuration
+\lstdefinestyle{cppstyle}{
+    language=C++,
+    backgroundcolor=\color{softbg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{slategrey}\itshape,
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    frame=single,
+    framesep=6pt,
+    framerule=0.5pt,
+    rulecolor=\color{lightgrey},
+    keepspaces=true,
+    keywordstyle=\color{primarynavy}\bfseries,
+    morekeywords={*,...},
+    numbers=left,
+    numberstyle=\tiny\color{slategrey},
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stringstyle=\color{purple},
+    tabsize=4,
+    upquote=true
+}
+
+% JavaScript/TypeScript Code Listings Configuration
+\lstdefinestyle{jsstyle}{
+    backgroundcolor=\color{softbg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{slategrey}\itshape,
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    frame=single,
+    framesep=6pt,
+    framerule=0.5pt,
+    rulecolor=\color{lightgrey},
+    keepspaces=true,
+    keywordstyle=\color{accentteal}\bfseries,
+    morekeywords={const, let, var, function, return, if, else, for, while, import, export, from, class, constructor, this, new, true, false, null, undefined, await, async, try, catch},
+    numbers=left,
+    numberstyle=\tiny\color{slategrey},
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stringstyle=\color{orange!80!black},
+    tabsize=4,
+    upquote=true,
+    sensitive=true
+}
+
+% LaTeX Code Listings Configuration
+\lstdefinestyle{latexstyle}{
+    language=[LaTeX]TeX,
+    backgroundcolor=\color{softbg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{slategrey}\itshape,
+    escapeinside={\%*}{*)},
+    extendedchars=true,
+    frame=single,
+    framesep=6pt,
+    framerule=0.5pt,
+    rulecolor=\color{lightgrey},
+    keepspaces=true,
+    keywordstyle=\color{primarynavy}\bfseries,
+    numbers=left,
+    numberstyle=\tiny\color{slategrey},
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    stringstyle=\color{accentteal},
+    tabsize=4,
+    upquote=true
+}
+
+
+% Graphics & TikZ / PGFPlots Signal Plotting Configuration
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz} % Circuit drawing package
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Styles for Signals and Systems Plots
+\pgfplotsset{
+    snsaxis/.style={
+        axis lines=middle,
+        xlabel={$t$},
+        ylabel={$x(t)$},
+        every axis x label/.style={at={(current axis.right of origin)}, anchor=west},
+        every axis y label/.style={at={(current axis.above origin)}, anchor=south},
+        label style={font=\small\sffamily\color{slategrey}},
+        tick label style={font=\tiny\sffamily\color{slategrey}},
+        axis line style={slategrey, -Stealth, thick},
+        grid=both,
+        grid style={dotted, lightgrey},
+        major grid style={dashed, lightgrey!80!white},
+        enlargelimits=true,
+        samples=100
+    },
+    snsdiscrete/.style={
+        snsaxis,
+        xlabel={$n$},
+        ylabel={$x[n]$},
+        every axis x label/.style={at={(current axis.right of origin)}, anchor=west},
+        every axis y label/.style={at={(current axis.above origin)}, anchor=south},
+        samples=20
+    }
+}
+
+% TikZ Styles for Block Diagrams
+\tikzset{
+    block/.style={draw=primarynavy, fill=softbg, rectangle, minimum height=3.2em, minimum width=6.5em, rounded corners=3pt, thick, align=center, font=\small\sffamily},
+    sum/.style={draw=primarynavy, fill=softbg, circle, minimum size=1.8em, thick, font=\small},
+    input/.style={coordinate},
+    output/.style={coordinate},
+    arrow/.style={draw=primarynavy, -{Stealth[scale=1.0]}, thick}
+}
+
+% Beautiful Boxed Environments using tcolorbox
+\usepackage[most]{tcolorbox}
+\newtcolorbox{problem}[1][]{
+    enhanced,
+    colback=softbg,
+    colframe=primarynavy,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={\sffamily Problem #1},
+    arc=4pt,
+    outer arc=4pt,
+    boxrule=1pt,
+    leftrule=4pt, % Modern accent strip on the left
+    drop shadow={slategrey!15!white},
+    before skip=18pt,
+    after skip=18pt
+}
+
+\newtcolorbox{definition}[1][]{
+    enhanced,
+    colback=softbg,
+    colframe=accentteal,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={\sffamily Definition #1},
+    arc=4pt,
+    outer arc=4pt,
+    boxrule=1pt,
+    leftrule=4pt,
+    drop shadow={slategrey!15!white},
+    before skip=12pt,
+    after skip=12pt
+}
+
+\newtcolorbox{theorem}[1][]{
+    enhanced,
+    colback=softbg,
+    colframe=purple!70!black,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={\sffamily Theorem #1},
+    arc=4pt,
+    outer arc=4pt,
+    boxrule=1pt,
+    leftrule=4pt,
+    drop shadow={slategrey!15!white},
+    before skip=12pt,
+    after skip=12pt
+}
+
+\newtcolorbox{note}[1][]{
+    enhanced,
+    colback=yellow!5!white,
+    colframe=orange!80!black,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={\sffamily Note #1},
+    arc=4pt,
+    outer arc=4pt,
+    boxrule=1pt,
+    leftrule=4pt,
+    drop shadow={slategrey!15!white},
+    before skip=12pt,
+    after skip=12pt
+}
+
+% Clean, beautifully spaced Solution Environment
+\newenvironment{solution}{
+    \par\vspace{10pt}\noindent
+    {\color{accentteal}\bfseries\sffamily\large Solution:}
+    \par\nopagebreak\vspace{5pt}\hrule height 0.5pt\relax\vspace{10pt}
+}{
+    \par\vspace{10pt}
+    \hfill{\color{accentteal}$\blacksquare$} % Elegant colored solid QED marker
+    \par\vspace{15pt}
+}
+
+% Headers and Footers with fancyhdr
+\usepackage{fancyhdr}
+\setlength{\headheight}{22pt} % Solve headheight too small warning
+\pagestyle{fancy}
+\fancyhf{} % Clear defaults
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+% Custom thin headers/footers rules colored in light gray
+\renewcommand{\headrule}{\hbox to\headwidth{\color{lightgrey}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{lightgrey}\leaders\hrule height \footrulewidth\hfill}}
+
+% Custom project metadata commands (re-definable in main.tex)
+\newcommand{\coursecode}{EE3012}
+\newcommand{\coursename}{Signals and Systems}
+\newcommand{\assignmenttitle}{Assignment 1}
+\newcommand{\studentname}{Lim Wei Jen}
+\newcommand{\matricno}{17012345}
+\newcommand{\courselecturer}{NoorHaryati}
+
+% Define Header & Footer Contents
+\fancyhead[L]{\small\sffamily\color{slategrey}\coursecode: \assignmenttitle}
+\fancyhead[R]{\small\sffamily\color{slategrey}\studentname}
+\fancyfoot[L]{\small\sffamily\color{slategrey}Department of Electrical Engineering}
+\fancyfoot[R]{\small\sffamily\color{slategrey}Page \thepage\ of \pageref{LastPage}}
+
+% Table of Contents Formatting using tocloft
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\Huge\bfseries\sffamily\color{primarynavy}}
+\renewcommand{\cftsecfont}{\sffamily\bfseries\color{primarynavy}}
+\renewcommand{\cftsubsecfont}{\sffamily\color{slategrey}}
+\renewcommand{\cftsecpagefont}{\sffamily\bfseries\color{primarynavy}}
+\renewcommand{\cftsubsecpagefont}{\sffamily\color{slategrey}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftdotsep}{4.5}
+\setlength{\cftbeforesecskip}{12pt}
+\setlength{\cftbeforesubsecskip}{6pt}
+
+% Hyperlinks Configuration
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primarynavy,
+    filecolor=accentteal,
+    urlcolor=accentteal,
+    citecolor=primarynavy,
+    pdftitle={\coursecode\ \assignmenttitle},
+    pdfauthor={\studentname},
+    pdfsubject={\coursename\ Assignment},
+    pdfkeywords={LaTeX, Signals, Systems, Assignment}
+}
+
+% Note: We bypass the lastpage package to prevent hyperref version mismatch conflicts,
+% and instead define \label{LastPage} at the end of main.tex.
+
+% Miscellaneous useful packages
+\usepackage{booktabs} % Elegant tables
+\usepackage{caption}  % Custom captions styling
+\captionsetup{font={small,sf}, labelfont={bf,color=primarynavy}, labelsep=period}
+\usepackage{float}    % Precise image placing [H]
+\usepackage{xurl}     % Allows beautiful line-breaking of long URLs
+
+% Customized list packages and environments
+\usepackage{enumitem}
+\newlist{alphaenum}{enumerate}{1}
+\setlist[alphaenum]{label=(\alph*), font=\sffamily\bfseries\color{primarynavy}, leftmargin=*, itemsep=4pt, parsep=0pt}
