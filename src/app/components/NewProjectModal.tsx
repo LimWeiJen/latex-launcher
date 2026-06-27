@@ -4,18 +4,16 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { FolderOpen, Plus, Loader2 } from "lucide-react";
-import { LazyStore } from "@tauri-apps/plugin-store";
 import { motion, AnimatePresence } from "framer-motion";
-
-const store = new LazyStore("projects.json");
 
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onProjectCreated: () => void;
+  projectsFilePath: string;
 }
 
-export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjectModalProps) {
+export function NewProjectModal({ isOpen, onClose, onProjectCreated, projectsFilePath }: NewProjectModalProps) {
   const [name, setName] = useState("");
   const [path, setPath] = useState("");
   const [template, setTemplate] = useState("Empty");
@@ -27,7 +25,8 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
 
   useEffect(() => {
     if (isOpen) {
-      invoke<string[]>("get_templates")
+      const templateFolderPath = localStorage.getItem("templateFolderPath") || "";
+      invoke<string[]>("get_templates", { templateDir: templateFolderPath })
         .then((fetchedTemplates) => {
           if (fetchedTemplates && fetchedTemplates.length > 0) {
             setTemplatesList(fetchedTemplates);
@@ -54,7 +53,8 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
     setIsLoadingPdf(true);
     setPdfUrl(null);
 
-    invoke<number[]>("get_template_pdf", { template })
+    const templateFolderPath = localStorage.getItem("templateFolderPath") || "";
+    invoke<number[]>("get_template_pdf", { template, templateDir: templateFolderPath })
       .then((bytes) => {
         if (!isMounted) return;
         const arrayBuffer = new Uint8Array(bytes).buffer;
@@ -103,10 +103,12 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
 
     setIsCreating(true);
     try {
+      const templateFolderPath = localStorage.getItem("templateFolderPath") || "";
       const fullPath = await invoke<string>("create_project", {
         name: name.trim(),
         path: path.trim(),
         template,
+        templateDir: templateFolderPath,
       });
 
       const newProject = {
@@ -117,10 +119,22 @@ export function NewProjectModal({ isOpen, onClose, onProjectCreated }: NewProjec
         createdAt: new Date().toISOString()
       };
       
-      let projects: any[] = await store.get("projects") || [];
+      let projects: any[] = [];
+      try {
+        const content = await invoke<string>("read_projects_file", { path: projectsFilePath });
+        const data = JSON.parse(content);
+        if (data.projects) {
+          projects = data.projects;
+        }
+      } catch (err) {
+        console.warn("Could not read projects file", err);
+      }
+      
       projects.push(newProject);
-      await store.set("projects", projects);
-      await store.save();
+      await invoke("write_projects_file", { 
+        path: projectsFilePath, 
+        content: JSON.stringify({ projects }, null, 2) 
+      });
 
       await invoke("open_in_antigravity", { projectPath: fullPath });
       

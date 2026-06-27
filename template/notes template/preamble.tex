@@ -1,0 +1,154 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, margin=0.8in]{geometry}
+\usepackage{microtype}
+
+% Typography for easy reading (Palatino for text and math)
+\usepackage{mathpazo}
+\usepackage[scaled=0.95]{helvet}
+\usepackage{courier}
+
+% Colors
+\usepackage{xcolor}
+\definecolor{primary}{HTML}{00509E}
+\definecolor{secondary}{HTML}{00A896}
+\definecolor{darkgray}{HTML}{333333}
+\definecolor{lightbg}{HTML}{F4F7F6}
+
+% Math Packages - essential for science notes
+\usepackage{amsmath, amssymb, amsfonts, mathtools}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{cancel}
+
+% Graphics and TikZ for circuit/signals
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes, arrows.meta, positioning, calc, decorations.pathmorphing}
+
+% Fancy Boxes for Definitions, Theorems, Important Notes
+\usepackage[most]{tcolorbox}
+\newtcolorbox{definition}[1][]{
+    enhanced,
+    colback=lightbg,
+    colframe=primary,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Definition: #1},
+    boxrule=1pt,
+    leftrule=4pt,
+    arc=3pt,
+    drop shadow={black!10},
+    before skip=12pt,
+    after skip=12pt
+}
+
+\newtcolorbox{theorem}[1][]{
+    enhanced,
+    colback=lightbg,
+    colframe=secondary,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Theorem: #1},
+    boxrule=1pt,
+    leftrule=4pt,
+    arc=3pt,
+    drop shadow={black!10},
+    before skip=12pt,
+    after skip=12pt
+}
+
+\newtcolorbox{important}[1][]{
+    enhanced,
+    colback=yellow!10,
+    colframe=red!70!black,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Important: #1},
+    boxrule=1pt,
+    leftrule=4pt,
+    arc=3pt,
+    drop shadow={black!10},
+    before skip=12pt,
+    after skip=12pt
+}
+
+\newtcolorbox{example}[1][]{
+    enhanced,
+    colback=white,
+    colframe=darkgray,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Example #1},
+    boxrule=0.5pt,
+    leftrule=3pt,
+    arc=3pt,
+    before skip=12pt,
+    after skip=12pt
+}
+
+% Header and Footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{darkgray}\booktitle}
+\fancyhead[R]{\small\sffamily\color{darkgray}\bookauthor}
+\fancyfoot[C]{\small\sffamily\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{darkgray}\leaders\hrule height \headrulewidth\hfill}}
+
+% Section Formatting for compactness and attractiveness
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{primary}}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primary}}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{secondary}}{\thesubsection}{1em}{}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=secondary,      
+    urlcolor=primary,
+    citecolor=secondary
+}
+
+% Code Listings Configuration
+\usepackage{listings}
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{lightbg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{secondary}\itshape,
+    keywordstyle=\color{primary}\bfseries,
+    numberstyle=\tiny\color{darkgray},
+    numbers=left,
+    numbersep=10pt,
+    frame=single,
+    framerule=0.5pt,
+    rulecolor=\color{darkgray!30},
+    stringstyle=\color{orange!80!black},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    xleftmargin=15pt,
+    xrightmargin=5pt
+}
+\lstset{style=codestyle}
+
+% Miscellaneous
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{enumitem}
+\setlist{itemsep=2pt, parsep=2pt, topsep=4pt}

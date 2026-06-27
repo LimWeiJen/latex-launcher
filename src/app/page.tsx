@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Folder, Calendar, Trash2 } from "lucide-react";
+import { Plus, Folder, Calendar, Trash2, Download, Settings } from "lucide-react";
 import { NewProjectModal } from "./components/NewProjectModal";
+import { SettingsModal } from "./components/SettingsModal";
 import { LazyStore } from "@tauri-apps/plugin-store";
-import { ask } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { motion, AnimatePresence } from "framer-motion";
-
-const store = new LazyStore("projects.json");
+import { save, open, ask } from "@tauri-apps/plugin-dialog";
 
 interface Project {
   id: string;
@@ -20,29 +19,81 @@ interface Project {
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [editorCommand, setEditorCommand] = useState("antigravity-ide");
 
-  const loadProjects = async () => {
+  const [projectsFilePath, setProjectsFilePath] = useState<string | null>(null);
+
+  const loadProjects = async (path: string) => {
     try {
-      const savedProjects = await store.get<Project[]>("projects");
-      if (savedProjects) {
-        setProjects(savedProjects);
+      const content = await invoke<string>("read_projects_file", { path });
+      const data = JSON.parse(content);
+      if (data.projects) {
+        setProjects(data.projects);
       }
     } catch (err) {
       console.error("Failed to load projects", err);
+      setProjects([]);
     }
   };
 
   useEffect(() => {
-    loadProjects();
+    const savedPath = localStorage.getItem("projectsFilePath");
+    if (savedPath) {
+      setProjectsFilePath(savedPath);
+      loadProjects(savedPath);
+    }
+    const savedEditorCommand = localStorage.getItem("editorCommand");
+    if (savedEditorCommand) {
+      setEditorCommand(savedEditorCommand);
+    }
   }, []);
 
   const handleOpenProject = async (path: string) => {
     try {
-      await invoke("open_in_antigravity", { projectPath: path });
+      await invoke("open_in_editor", { projectPath: path, editorCommand });
     } catch (err) {
       console.error(err);
       alert(`Failed to open project: ${err}`);
+    }
+  };
+
+  const handleImportProject = async () => {
+    try {
+      const selectedPath = await open({
+        directory: true,
+        multiple: false,
+      });
+      if (selectedPath && projectsFilePath) {
+        const pathStr = selectedPath as string;
+        const name = pathStr.split(/[/\\]/).pop() || "Imported Project";
+        
+        let savedProjects = [...projects];
+        
+        if (savedProjects.some(p => p.path === pathStr)) {
+          alert("This project is already imported.");
+          return;
+        }
+
+        const newProject = {
+          id: Date.now().toString(),
+          name: name,
+          path: pathStr,
+          template: "Imported",
+          createdAt: new Date().toISOString()
+        };
+        
+        const newProjects = [...savedProjects, newProject];
+        await invoke("write_projects_file", { 
+          path: projectsFilePath, 
+          content: JSON.stringify({ projects: newProjects }, null, 2) 
+        });
+        setProjects(newProjects);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to import project: ${err}`);
     }
   };
 
@@ -54,22 +105,90 @@ export default function Home() {
         kind: "warning",
       });
 
-      if (confirmed) {
+      if (confirmed && projectsFilePath) {
         await invoke("delete_project", { projectPath: project.path });
         
-        let savedProjects = await store.get<Project[]>("projects");
-        if (savedProjects) {
-          savedProjects = savedProjects.filter(p => p.id !== project.id);
-          await store.set("projects", savedProjects);
-          await store.save();
-          setProjects(savedProjects);
-        }
+        const savedProjects = projects.filter(p => p.id !== project.id);
+        await invoke("write_projects_file", { 
+          path: projectsFilePath, 
+          content: JSON.stringify({ projects: savedProjects }, null, 2) 
+        });
+        setProjects(savedProjects);
       }
     } catch (err) {
       console.error(err);
       alert(`Failed to delete project: ${err}`);
     }
   };
+
+  const handleSelectProjectsFile = async () => {
+    try {
+      const selectedPath = await open({
+        multiple: false,
+        filters: [{ name: "JSON", extensions: ["json"] }]
+      });
+      if (selectedPath) {
+        localStorage.setItem("projectsFilePath", selectedPath as string);
+        setProjectsFilePath(selectedPath as string);
+        loadProjects(selectedPath as string);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to select file: ${err}`);
+    }
+  };
+
+  const handleCreateProjectsFile = async () => {
+    try {
+      const selectedPath = await save({
+        filters: [{ name: "JSON", extensions: ["json"] }],
+        defaultPath: "projects.json"
+      });
+      if (selectedPath) {
+        await invoke("write_projects_file", { 
+          path: selectedPath, 
+          content: JSON.stringify({ projects: [] }, null, 2) 
+        });
+        localStorage.setItem("projectsFilePath", selectedPath as string);
+        setProjectsFilePath(selectedPath as string);
+        setProjects([]);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to create file: ${err}`);
+    }
+  };
+
+  if (!projectsFilePath) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 dark:bg-black p-8 text-center">
+        <h1 className="text-3xl font-bold mb-4 dark:text-zinc-50">LaTeX Launcher</h1>
+        <p className="text-zinc-500 mb-8 max-w-md dark:text-zinc-400">
+          To get started, please select your existing <code>projects.json</code> file or create a new one. This allows you to manage your projects flexibly.
+        </p>
+        <div className="flex gap-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleSelectProjectsFile}
+            className="flex items-center gap-2 rounded-lg bg-zinc-200 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-300 transition-colors shadow-sm dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-700"
+          >
+            <Folder className="h-4 w-4" />
+            Select Existing
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleCreateProjectsFile}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm hover:shadow-blue-500/20"
+          >
+            <Plus className="h-4 w-4" />
+            Create New File
+          </motion.button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 font-sans dark:bg-black">
@@ -82,15 +201,35 @@ export default function Home() {
         <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           LaTeX Launcher
         </h1>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm hover:shadow-blue-500/20"
-        >
-          <Plus className="h-4 w-4" />
-          New Project
-        </motion.button>
+        <div className="flex items-center gap-3">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsSettingsModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            title="Settings"
+          >
+            <Settings className="h-4 w-4" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleImportProject}
+            className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <Download className="h-4 w-4" />
+            Import
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm hover:shadow-blue-500/20"
+          >
+            <Plus className="h-4 w-4" />
+            New Project
+          </motion.button>
+        </div>
       </motion.header>
 
       <main className="flex-1 p-8">
@@ -122,10 +261,8 @@ export default function Home() {
                 <motion.div 
                   key={project.id} 
                   layout
-                  variants={{
-                    hidden: { opacity: 0, y: 20, scale: 0.95 },
-                    show: { opacity: 1, y: 0, scale: 1 }
-                  }}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                   whileHover={{ y: -4, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -173,7 +310,15 @@ export default function Home() {
       <NewProjectModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        onProjectCreated={loadProjects}
+        onProjectCreated={() => loadProjects(projectsFilePath!)}
+        projectsFilePath={projectsFilePath!}
+      />
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
+          setEditorCommand(localStorage.getItem("editorCommand") || "antigravity-ide");
+        }}
       />
     </div>
   );

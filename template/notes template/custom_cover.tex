@@ -1,0 +1,40 @@
+% ==============================================================================
+% CUSTOM COVER PAGE: Full Size Image Cover
+% ==============================================================================
+
+\begin{titlepage}
+    % Ensure there are no margins for the cover page
+    \newgeometry{margin=0pt}
+    
+    \begin{tikzpicture}[remember picture, overlay]
+        % Place the cover image in the center, sizing it to cover the entire page
+        % To use this, place a high-resolution A4 image named 'cover_image.jpg' in the 'images' folder.
+        \IfFileExists{images/cover_image.png}{
+            \node[inner sep=0pt, at=(current page.center)] {
+                \includegraphics[width=\paperwidth, height=\paperheight]{images/cover_image.png}
+            };
+        }{
+            \node[inner sep=0pt, at=(current page.center), fill=gray!20, minimum width=\paperwidth, minimum height=\paperheight] {
+                \begin{minipage}{0.8\textwidth}
+                    \centering
+                    \Huge\sffamily\bfseries [Cover Image Missing] \\[1cm]
+                    \Large Please place a full-size A4 image named \texttt{cover\_image.jpg} \\
+                    in the \texttt{images/} folder.
+                \end{minipage}
+            };
+        }
+        
+        % Uncomment the below lines if you want a title overlay on top of the image
+        % \node[anchor=south west, fill=black!70, text=white, minimum width=\paperwidth, inner sep=20pt, yshift=2cm] 
+        %     at (current page.south west) {
+        %         \begin{minipage}{\paperwidth}
+        %         \centering
+        %         {\Huge \bfseries \sffamily \booktitle \par}
+        %         \vspace{10pt}
+        %         {\Large \sffamily \bookauthor \par}
+        %         \end{minipage}
+        %     };
+    \end{tikzpicture}
+    
+    \restoregeometry
+\end{titlepage}

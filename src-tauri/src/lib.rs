@@ -15,24 +15,13 @@ fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Result
     Ok(())
 }
 
-fn get_template_base_dir() -> std::path::PathBuf {
-    let mut dir = std::env::current_dir().unwrap_or_default().join("template");
-    if !dir.exists() {
-        dir = std::env::current_dir()
-            .unwrap_or_default()
-            .join("..")
-            .join("template");
-    }
-    dir
-}
-
 #[tauri::command]
-fn get_templates() -> Result<Vec<String>, String> {
+fn get_templates(template_dir: String) -> Result<Vec<String>, String> {
     let mut templates = Vec::new();
-    let template_dir = get_template_base_dir();
+    let template_dir_path = std::path::Path::new(&template_dir);
 
-    if template_dir.exists() && template_dir.is_dir() {
-        if let Ok(entries) = fs::read_dir(template_dir) {
+    if template_dir_path.exists() && template_dir_path.is_dir() {
+        if let Ok(entries) = fs::read_dir(template_dir_path) {
             for entry in entries.flatten() {
                 if let Ok(ty) = entry.file_type() {
                     if ty.is_dir() {
@@ -49,16 +38,16 @@ fn get_templates() -> Result<Vec<String>, String> {
 }
 
 #[tauri::command]
-fn create_project(name: String, path: String, template: String) -> Result<String, String> {
+fn create_project(name: String, path: String, template: String, template_dir: String) -> Result<String, String> {
     let project_dir = std::path::Path::new(&path).join(&name);
     if project_dir.exists() {
         return Err("Directory already exists".to_string());
     }
 
-    let template_dir = get_template_base_dir().join(&template);
+    let template_dir_path = std::path::Path::new(&template_dir).join(&template);
 
-    if template_dir.exists() && template_dir.is_dir() {
-        copy_dir_all(&template_dir, &project_dir)
+    if template_dir_path.exists() && template_dir_path.is_dir() {
+        copy_dir_all(&template_dir_path, &project_dir)
             .map_err(|e| format!("Failed to copy template: {}", e))?;
     } else {
         std::fs::create_dir_all(&project_dir).map_err(|e| e.to_string())?;
@@ -79,18 +68,18 @@ fn delete_project(project_path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn open_in_antigravity(project_path: String) -> Result<(), String> {
+fn open_in_editor(project_path: String, editor_command: String) -> Result<(), String> {
     #[cfg(target_os = "windows")]
     {
         std::process::Command::new("cmd")
-            .args(["/c", "antigravity-ide", &project_path])
+            .args(["/c", &editor_command, &project_path])
             .spawn()
             .map_err(|e| e.to_string())?;
     }
 
     #[cfg(not(target_os = "windows"))]
     {
-        std::process::Command::new("antigravity-ide")
+        std::process::Command::new(&editor_command)
             .arg(&project_path)
             .spawn()
             .map_err(|e| e.to_string())?;
@@ -100,10 +89,10 @@ fn open_in_antigravity(project_path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn get_template_pdf(template: String) -> Result<Vec<u8>, String> {
-    let template_dir = get_template_base_dir().join(&template);
-    if template_dir.exists() && template_dir.is_dir() {
-        if let Ok(entries) = std::fs::read_dir(template_dir) {
+fn get_template_pdf(template: String, template_dir: String) -> Result<Vec<u8>, String> {
+    let template_dir_path = std::path::Path::new(&template_dir).join(&template);
+    if template_dir_path.exists() && template_dir_path.is_dir() {
+        if let Ok(entries) = std::fs::read_dir(template_dir_path) {
             for entry in entries.flatten() {
                 let path = entry.path();
                 if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("pdf") {
@@ -117,6 +106,16 @@ fn get_template_pdf(template: String) -> Result<Vec<u8>, String> {
     Err("No PDF preview found".to_string())
 }
 
+#[tauri::command]
+fn read_projects_file(path: String) -> Result<String, String> {
+    std::fs::read_to_string(&path).map_err(|e| format!("Failed to read {}: {}", path, e))
+}
+
+#[tauri::command]
+fn write_projects_file(path: String, content: String) -> Result<(), String> {
+    std::fs::write(&path, content).map_err(|e| format!("Failed to write {}: {}", path, e))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -124,10 +123,12 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             create_project,
-            open_in_antigravity,
+            open_in_editor,
             get_templates,
             delete_project,
-            get_template_pdf
+            get_template_pdf,
+            read_projects_file,
+            write_projects_file
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

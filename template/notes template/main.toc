@@ -1,0 +1,8 @@
+\contentsline {chapter}{\numberline {1}Template Usage Guide}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Highlight Boxes}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Displaying Code}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Graph Plotting with PGFPlots}{2}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}2D Signal Graph}{2}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}3D Surface Graph}{2}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Circuit Diagrams}{2}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Next Steps}{3}{section.1.5}%
